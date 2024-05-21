@@ -1,93 +1,63 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import "./App.css";
-import { Copy } from "lucide-react";
+import { useDropzone } from "react-dropzone";
+import ImagenPreview from "./components/ImagePreview";
+import CopyButtons from "./components/CopyButtons";
+import EyeDropperButton from "./components/EyeDropperButton";
+import PreviewColor from "./components/PreviewColor";
+import { hexToRGB } from "./lib/utils";
+import DropZone from "./components/DropZone";
 
 function App() {
   const [color, setColor] = useState("");
   const [rgbColor, setRgbColor] = useState("");
   const [imagen, setImagen] = useState("");
 
+  const onDrop = useCallback((acceptedFiles) => {
+    const renderizarImg = URL.createObjectURL(acceptedFiles[0]);
+    setImagen(renderizarImg);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   const handleColor = async () => {
     if (!window.EyeDropper) {
       console.log("No se puede");
       return;
     }
+    
     const eyeDropper = new EyeDropper();
     const res = await eyeDropper.open();
-
     const rgb = hexToRGB(res.sRGBHex);
     setRgbColor(rgb);
     setColor(res.sRGBHex);
   };
 
-  const handleImage = (e) => {
-    const renderizarImg = URL.createObjectURL(e.target.files[0]);
-    setImagen(renderizarImg);
-  };
-
-  const handleCopyHex = async () => {
-    await navigator.clipboard.writeText(color);
-  };
-  const handleCopyRgb = async () => {
-    await navigator.clipboard.writeText(rgbColor);
-  };
-
-  function hexToRGB(hex, alpha) {
-    var r = parseInt(hex.slice(1, 3), 16),
-      g = parseInt(hex.slice(3, 5), 16),
-      b = parseInt(hex.slice(5, 7), 16);
-
-    if (alpha) {
-      return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
-    } else {
-      return "rgb(" + r + ", " + g + ", " + b + ")";
-    }
-  }
-
   return (
     <>
-      <main className="flex flex-col justify-center items-center h-screen bg-indigo-500">
-        <div className="w-[500px] h-[500px]">
-          {imagen ? (
-            <img src={imagen} className="h-full w-full object-cover" />
-          ) : (
-            <img src="/bg.jpg" className="h-full w-full object-cover" />
-          )}
-        </div>
-        <input
-          type="file"
-          accept=".jpg, .jpeg, .png, .JPG, .JPEG, .PNG"
-          onChange={handleImage}
-        />
-        <button onClick={handleColor}>Pick Color</button>
-        <div
-          className="w-[50px] h-[50px]"
-          style={{ background: `${color}` }}
-        ></div>
+      <main className="min-h-screen bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
 
-        <section className="flex flex-col gap-3">
-          <div>
-            <input type="text" value={color} disabled={true}/>
-            <button
-              disabled={color !== "" ? false : true}
-              onClick={handleCopyHex}
-            >
-              Color
-            </button>
-          </div>
-          <div>
-            <input type="text" value={rgbColor} disabled={true}/>
-            <button
-              disabled={rgbColor !== "" ? false : true}
-              onClick={handleCopyRgb}
-            >
-              RgbColor
-            </button>
+        <section className="h-full mx-auto w-full max-w-screen-2xl px-5 md:p-10  m-auto grid grid-cols-1 md:grid-cols-2 gap-14">
+          <ImagenPreview imagen={imagen} />
+          <div className="flex flex-col-reverse md:flex-col gap-4 ">
+            <DropZone
+              getInputProps={getInputProps}
+              getRootProps={getRootProps}
+              isDragActive={isDragActive}
+            />
+            <div className="flex flex-col gap-4">
+              <PreviewColor color={color} />
+              <section className="flex flex-col gap-3 text-white ">
+                <CopyButtons color={color} title={"HEX"} />
+                <CopyButtons color={rgbColor} title={"RGB"} />
+              </section>
+              <EyeDropperButton
+                handleColor={handleColor}
+                title={"Haz click para abir el cuantagotas "}
+              />
+            </div>
           </div>
         </section>
       </main>
-
-     
     </>
   );
 }
