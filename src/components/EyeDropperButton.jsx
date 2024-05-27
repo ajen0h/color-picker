@@ -1,6 +1,7 @@
 import { Pipette } from "lucide-react";
 
 const EyeDropperButton = ({ handleColor, title }) => {
+
   return (
     <>
       <button
@@ -11,6 +12,7 @@ const EyeDropperButton = ({ handleColor, title }) => {
           {title}
         </>
       </button>
+      
     </>
   );
 };

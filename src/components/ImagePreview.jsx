@@ -1,18 +1,11 @@
 const ImagenPreview = ({ imagen }) => {
   return (
-    <div>
-      {imagen ? (
-        <img
-          src={imagen}
-          className="w-full object-contain border-[14px] rounded-xl"
-        />
-      ) : (
-        <img
-          src="/bg.jpg"
-          className="w-full object-contain border-[14px] rounded-xl"
-        />
-      )}
-    </div>
+    <>
+      <img
+        src={imagen}
+        className="w-full object-contain border-[14px] rounded-xl"
+      />
+    </>
   );
 };
 
