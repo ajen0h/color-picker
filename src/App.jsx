@@ -18,6 +18,9 @@ function App() {
   const [palette, setPalette] = useState([]);
 
   const onDrop = useCallback((acceptedFiles) => {
+    const type = acceptedFiles[0].type.split("/")[0];
+    console.log(type);
+    if (type !== "image") return;
     const renderizarImg = URL.createObjectURL(acceptedFiles[0]);
     setImagen(renderizarImg);
   }, []);
