@@ -1,7 +1,7 @@
 import { Check, Clipboard } from "lucide-react";
 import { useState } from "react";
 
-const CopyButtons = ({ title, color }) => {
+const CopyButtons = ({ title, color, notify }) => {
   const [icon, setIcon] = useState(false);
 
   const handleCopy = async () => {
@@ -10,6 +10,7 @@ const CopyButtons = ({ title, color }) => {
     setTimeout(() => {
       setIcon(false);
     }, 2000);
+    notify()
   };
 
   return (

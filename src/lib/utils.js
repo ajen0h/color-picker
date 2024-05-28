@@ -9,3 +9,22 @@ export function hexToRGB(hex, alpha) {
       return "rgb(" + r + ", " + g + ", " + b + ")";
     }
   }
+
+
+  export const isColorDark = (color) => {
+    // Convertir el color hex a RGB
+    let r, g, b;
+    if (color.charAt(0) === '#') {
+      color = color.substring(1);
+    }
+    if (color.length === 3) {
+      color = color.split('').map(c => c + c).join('');
+    }
+    r = parseInt(color.substring(0, 2), 16);
+    g = parseInt(color.substring(2, 4), 16);
+    b = parseInt(color.substring(4, 6), 16);
+  
+    // Calcular la luminosidad
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness < 128;
+  };
